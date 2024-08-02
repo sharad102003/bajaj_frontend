@@ -64,6 +64,14 @@ const DataForm = () => {
                         <label>
                             <input 
                                 type="checkbox" 
+                                value="alphabets" 
+                                onChange={handleSectionChange} 
+                            />
+                            Alphabets
+                        </label>
+                        <label>
+                            <input 
+                                type="checkbox" 
                                 value="highest_alphabet" 
                                 onChange={handleSectionChange} 
                             />
@@ -75,6 +83,12 @@ const DataForm = () => {
                             <div>
                                 <h2>Filtered Response</h2>
                                 <p>Numbers: {response.numbers.join(',')}</p>
+                            </div>
+                        )}
+                        {selectedSections.includes('alphabets') && (
+                            <div>
+                                <h2>Alphabets</h2>
+                                <p>Alphabets: {response.alphabets.join(',')}</p>
                             </div>
                         )}
                         {selectedSections.includes('highest_alphabet') && (
