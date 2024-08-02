@@ -14,22 +14,40 @@ const DataForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log('Input:', input);  // Log input to debug
+            // Attempt to parse the JSON input
             const jsonData = JSON.parse(input);
-            console.log('Parsed JSON:', jsonData);  // Log parsed JSON
-            const res = await axios.post('https://bajaj-backend-chi.vercel.app/bfhl', { data: jsonData });
-            console.log('Response:', res.data);  // Log response
+
+            // Ensure the data is in the correct format
+            if (!jsonData.data || !Array.isArray(jsonData.data)) {
+                throw new Error('Invalid data format. Expected an array of strings.');
+            }
+
+            // Log the data being sent for debugging
+            console.log('Sending data to backend:', jsonData);
+
+            // Make the POST request
+            const res = await axios.post('https://bajaj-backend-chi.vercel.app/bfhl', jsonData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Log the response for debugging
+            console.log('Response from backend:', res.data);
+
+            // Update the state with the response data
             setResponse(res.data);
             setError('');
         } catch (err) {
-            setError('Invalid JSON or failed to fetch data');
-            console.error('Error during request:', err);  // Log error details
+            // Handle errors and log them for debugging
+            setError(`Error: ${err.message}`);
+            console.error('Error during request:', err);
         }
     };
 
     const handleSectionChange = (e) => {
         const { value, checked } = e.target;
-        setSelectedSections((prev) => 
+        setSelectedSections((prev) =>
             checked ? [...prev, value] : prev.filter((section) => section !== value)
         );
     };
@@ -47,7 +65,7 @@ const DataForm = () => {
                 />
                 <button type="submit">Submit</button>
             </form>
-            {error && <p style={{color: 'red'}}>{error}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             {response && (
                 <div>
                     <label>
