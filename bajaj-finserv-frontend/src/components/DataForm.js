@@ -20,7 +20,7 @@ const DataForm = () => {
             setError('');
         } catch (err) {
             setError('Invalid JSON or failed to fetch data');
-            console.error(err);
+            console.error('Error during POST request:', err);
         }
     };
 
