@@ -14,13 +14,16 @@ const DataForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            console.log('Input:', input);  // Log input to debug
             const jsonData = JSON.parse(input);
+            console.log('Parsed JSON:', jsonData);  // Log parsed JSON
             const res = await axios.post('https://bajaj-backend-chi.vercel.app/bfhl', { data: jsonData });
+            console.log('Response:', res.data);  // Log response
             setResponse(res.data);
             setError('');
         } catch (err) {
             setError('Invalid JSON or failed to fetch data');
-            console.error('Error during POST request:', err);
+            console.error('Error during request:', err);  // Log error details
         }
     };
 
