@@ -15,12 +15,14 @@ const DataForm = () => {
         e.preventDefault();
         try {
             const jsonData = JSON.parse(input);
+            console.log("Sending data:", jsonData);  // Debugging line
             const res = await axios.post('https://bajaj-backend-chi.vercel.app/bfhl', { data: jsonData });
+            console.log("Server response:", res.data);  // Debugging line
             setResponse(res.data);
             setError('');
         } catch (err) {
             setError('Invalid JSON or failed to fetch data');
-            console.error(err);
+            console.error("Error details:", err.response ? err.response.data : err.message);  // Debugging line
         }
     };
 
@@ -32,72 +34,75 @@ const DataForm = () => {
     };
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div>
             <h1>Submit Your Data</h1>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>API Input</label>
-                    <textarea 
-                        value={input} 
-                        onChange={handleInputChange} 
-                        placeholder='Enter JSON'
-                        rows="3" 
-                        cols="50"
-                        style={{ display: 'block', margin: '10px 0' }}
-                    />
-                    <button type="submit" style={{ display: 'block' }}>Submit</button>
-                </div>
+                <textarea 
+                    value={input} 
+                    onChange={handleInputChange} 
+                    placeholder='Enter JSON'
+                    rows="5" 
+                    cols="50"
+                />
+                <button type="submit">Submit</button>
             </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p style={{color: 'red'}}>{error}</p>}
             {response && (
                 <div>
-                    <div>
-                        <label>Multi Filter</label>
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                value="numbers" 
-                                onChange={handleSectionChange} 
-                            />
-                            Numbers
-                        </label>
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                value="alphabets" 
-                                onChange={handleSectionChange} 
-                            />
-                            Alphabets
-                        </label>
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                value="highest_alphabet" 
-                                onChange={handleSectionChange} 
-                            />
-                            Highest Alphabet
-                        </label>
-                    </div>
-                    <div>
-                        {selectedSections.includes('numbers') && (
-                            <div>
-                                <h2>Filtered Response</h2>
-                                <p>Numbers: {response.numbers.join(',')}</p>
-                            </div>
-                        )}
-                        {selectedSections.includes('alphabets') && (
-                            <div>
-                                <h2>Alphabets</h2>
-                                <p>Alphabets: {response.alphabets.join(',')}</p>
-                            </div>
-                        )}
-                        {selectedSections.includes('highest_alphabet') && (
-                            <div>
-                                <h2>Highest Alphabet</h2>
-                                <p>Highest Alphabet: {response.highest_alphabet}</p>
-                            </div>
-                        )}
-                    </div>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            value="numbers" 
+                            onChange={handleSectionChange} 
+                        />
+                        Numbers
+                    </label>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            value="alphabets" 
+                            onChange={handleSectionChange} 
+                        />
+                        Alphabets
+                    </label>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            value="highest_alphabet" 
+                            onChange={handleSectionChange} 
+                        />
+                        Highest Alphabet
+                    </label>
+                    {selectedSections.includes('numbers') && (
+                        <div>
+                            <h2>Numbers</h2>
+                            <ul>
+                                {response.numbers.map((num, index) => (
+                                    <li key={index}>{num}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {selectedSections.includes('alphabets') && (
+                        <div>
+                            <h2>Alphabets</h2>
+                            <ul>
+                                {response.alphabets.map((char, index) => (
+                                    <li key={index}>{char}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {selectedSections.includes('highest_alphabet') && (
+                        <div>
+                            <h2>Highest Alphabet</h2>
+                            <ul>
+                                {response.highest_alphabet.map((char, index) => (
+                                    <li key={index}>{char}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
