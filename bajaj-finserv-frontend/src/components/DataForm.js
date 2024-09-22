@@ -5,7 +5,7 @@ const DataForm = () => {
     const [input, setInput] = useState('');
     const [response, setResponse] = useState(null);
     const [error, setError] = useState('');
-    const [selectedSections, setSelectedSections] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState(''); // Use a single filter
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
@@ -20,7 +20,7 @@ const DataForm = () => {
                 throw new Error('Invalid data format. Expected an array of strings.');
             }
 
-            const res = await axios.post('https://bajaj-backend-chi.vercel.app/bfhl', jsonData, {
+            const res = await axios.post('https://bajajfrontend-seven.vercel.app/bfhl', jsonData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -34,16 +34,13 @@ const DataForm = () => {
         }
     };
 
-    const handleSectionChange = (e) => {
-        const { value, checked } = e.target;
-        setSelectedSections((prev) =>
-            checked ? [...prev, value] : prev.filter((section) => section !== value)
-        );
+    const handleFilterChange = (e) => {
+        setSelectedFilter(e.target.value); // Update filter based on dropdown selection
     };
 
     return (
-        <div>
-            <h1>Submit Your Data</h1>
+        <div style={{ margin: '20px' }}>
+            <h1>API Input</h1>
             <form onSubmit={handleSubmit}>
                 <textarea 
                     value={input} 
@@ -51,64 +48,37 @@ const DataForm = () => {
                     placeholder='Enter JSON'
                     rows="5" 
                     cols="50"
+                    style={{ width: '100%', marginBottom: '10px' }}
                 />
-                <button type="submit">Submit</button>
+                <button type="submit" style={{ marginBottom: '10px' }}>Submit</button>
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
+            
             {response && (
                 <div>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            value="numbers" 
-                            onChange={handleSectionChange} 
-                        />
-                        Numbers
-                    </label>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            value="alphabets" 
-                            onChange={handleSectionChange} 
-                        />
-                        Alphabets
-                    </label>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            value="highest_alphabet" 
-                            onChange={handleSectionChange} 
-                        />
-                        Highest Alphabet
-                    </label>
+                    <label>Multi Filter</label>
+                    <select onChange={handleFilterChange} value={selectedFilter}>
+                        <option value="">--Select--</option>
+                        <option value="numbers">Numbers</option>
+                        <option value="alphabets">Alphabets</option>
+                        <option value="highest_alphabet">Highest Alphabet</option>
+                    </select>
+
                     <div>
                         <h2>Filtered Response</h2>
-                        {selectedSections.includes('numbers') && response.numbers && (
+                        {selectedFilter === 'numbers' && response.numbers && (
                             <div>
-                                <h3>Numbers</h3>
-                                <ul>
-                                    {response.numbers.map((num, index) => (
-                                        <li key={index}>{num}</li>
-                                    ))}
-                                </ul>
+                                <strong>Numbers:</strong> {response.numbers.join(', ')}
                             </div>
                         )}
-                        {selectedSections.includes('alphabets') && response.alphabets && (
+                        {selectedFilter === 'alphabets' && response.alphabets && (
                             <div>
-                                <h3>Alphabets</h3>
-                                <ul>
-                                    {response.alphabets.map((char, index) => (
-                                        <li key={index}>{char}</li>
-                                    ))}
-                                </ul>
+                                <strong>Alphabets:</strong> {response.alphabets.join(', ')}
                             </div>
                         )}
-                        {selectedSections.includes('highest_alphabet') && response.highest_alphabet && (
+                        {selectedFilter === 'highest_alphabet' && response.highest_alphabet && (
                             <div>
-                                <h3>Highest Alphabet</h3>
-                                <ul>
-                                    <li>{response.highest_alphabet}</li>
-                                </ul>
+                                <strong>Highest Alphabet:</strong> {response.highest_alphabet}
                             </div>
                         )}
                     </div>
