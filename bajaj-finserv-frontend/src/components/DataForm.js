@@ -5,7 +5,7 @@ const DataForm = () => {
     const [input, setInput] = useState('');
     const [response, setResponse] = useState(null);
     const [error, setError] = useState('');
-    const [selectedSections, setSelectedSections] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState('');
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
@@ -34,81 +34,50 @@ const DataForm = () => {
         }
     };
 
-    const handleSectionChange = (e) => {
-        const { value, checked } = e.target;
-        setSelectedSections((prev) =>
-            checked ? [...prev, value] : prev.filter((section) => section !== value)
-        );
+    const handleFilterChange = (e) => {
+        setSelectedFilter(e.target.value);
     };
 
     return (
-        <div>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <h1>Submit Your Data</h1>
             <form onSubmit={handleSubmit}>
-                <textarea 
-                    value={input} 
-                    onChange={handleInputChange} 
+                <textarea
+                    value={input}
+                    onChange={handleInputChange}
                     placeholder='Enter JSON'
-                    rows="5" 
+                    rows="5"
                     cols="50"
+                    style={{ marginBottom: '20px' }}
                 />
-                <button type="submit">Submit</button>
+                <br />
+                <button type="submit" style={{ padding: '10px 20px', fontSize: '16px' }}>
+                    Submit
+                </button>
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {response && (
-                <div>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            value="numbers" 
-                            onChange={handleSectionChange} 
-                        />
-                        Numbers
-                    </label>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            value="alphabets" 
-                            onChange={handleSectionChange} 
-                        />
-                        Alphabets
-                    </label>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            value="highest_lowercase_alphabet" 
-                            onChange={handleSectionChange} 
-                        />
-                        Highest Lowercase Alphabet
-                    </label>
+                <div style={{ marginTop: '30px' }}>
                     <div>
+                        <h2>Multi Filter</h2>
+                        <select value={selectedFilter} onChange={handleFilterChange}>
+                            <option value="">Select Filter</option>
+                            <option value="numbers">Numbers</option>
+                            <option value="alphabets">Alphabets</option>
+                        </select>
+                    </div>
+                    <div style={{ marginTop: '20px' }}>
                         <h2>Filtered Response</h2>
-                        {selectedSections.includes('numbers') && response.numbers && (
+                        {selectedFilter === 'numbers' && response.numbers && (
                             <div>
                                 <h3>Numbers</h3>
-                                <ul>
-                                    {response.numbers.map((num, index) => (
-                                        <li key={index}>{num}</li>
-                                    ))}
-                                </ul>
+                                <p>{response.numbers.join(',')}</p>
                             </div>
                         )}
-                        {selectedSections.includes('alphabets') && response.alphabets && (
+                        {selectedFilter === 'alphabets' && response.alphabets && (
                             <div>
                                 <h3>Alphabets</h3>
-                                <ul>
-                                    {response.alphabets.map((char, index) => (
-                                        <li key={index}>{char}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        {selectedSections.includes('highest_lowercase_alphabet') && response.highest_lowercase_alphabet && (
-                            <div>
-                                <h3>Highest Lowercase Alphabet</h3>
-                                <ul>
-                                    <li>{response.highest_lowercase_alphabet}</li>
-                                </ul>
+                                <p>{response.alphabets.join(',')}</p>
                             </div>
                         )}
                     </div>
