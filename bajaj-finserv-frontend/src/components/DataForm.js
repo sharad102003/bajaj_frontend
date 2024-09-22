@@ -5,7 +5,7 @@ const DataForm = () => {
     const [input, setInput] = useState('');
     const [response, setResponse] = useState(null);
     const [error, setError] = useState('');
-    const [selectedFilter, setSelectedFilter] = useState(''); // Use a single filter
+    const [selectedSections, setSelectedSections] = useState([]);
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
@@ -34,13 +34,16 @@ const DataForm = () => {
         }
     };
 
-    const handleFilterChange = (e) => {
-        setSelectedFilter(e.target.value); // Update filter based on dropdown selection
+    const handleSectionChange = (e) => {
+        const { value, checked } = e.target;
+        setSelectedSections((prev) =>
+            checked ? [...prev, value] : prev.filter((section) => section !== value)
+        );
     };
 
     return (
-        <div style={{ margin: '20px' }}>
-            <h1>API Input</h1>
+        <div>
+            <h1>Submit Your Data</h1>
             <form onSubmit={handleSubmit}>
                 <textarea 
                     value={input} 
@@ -48,37 +51,64 @@ const DataForm = () => {
                     placeholder='Enter JSON'
                     rows="5" 
                     cols="50"
-                    style={{ width: '100%', marginBottom: '10px' }}
                 />
-                <button type="submit" style={{ marginBottom: '10px' }}>Submit</button>
+                <button type="submit">Submit</button>
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            
             {response && (
                 <div>
-                    <label>Multi Filter</label>
-                    <select onChange={handleFilterChange} value={selectedFilter}>
-                        <option value="">--Select--</option>
-                        <option value="numbers">Numbers</option>
-                        <option value="alphabets">Alphabets</option>
-                        <option value="highest_alphabet">Highest Alphabet</option>
-                    </select>
-
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            value="numbers" 
+                            onChange={handleSectionChange} 
+                        />
+                        Numbers
+                    </label>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            value="alphabets" 
+                            onChange={handleSectionChange} 
+                        />
+                        Alphabets
+                    </label>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            value="highest_lowercase_alphabet" 
+                            onChange={handleSectionChange} 
+                        />
+                        Highest Lowercase Alphabet
+                    </label>
                     <div>
                         <h2>Filtered Response</h2>
-                        {selectedFilter === 'numbers' && response.numbers && (
+                        {selectedSections.includes('numbers') && response.numbers && (
                             <div>
-                                <strong>Numbers:</strong> {response.numbers.join(', ')}
+                                <h3>Numbers</h3>
+                                <ul>
+                                    {response.numbers.map((num, index) => (
+                                        <li key={index}>{num}</li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
-                        {selectedFilter === 'alphabets' && response.alphabets && (
+                        {selectedSections.includes('alphabets') && response.alphabets && (
                             <div>
-                                <strong>Alphabets:</strong> {response.alphabets.join(', ')}
+                                <h3>Alphabets</h3>
+                                <ul>
+                                    {response.alphabets.map((char, index) => (
+                                        <li key={index}>{char}</li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
-                        {selectedFilter === 'highest_alphabet' && response.highest_alphabet && (
+                        {selectedSections.includes('highest_lowercase_alphabet') && response.highest_lowercase_alphabet && (
                             <div>
-                                <strong>Highest Alphabet:</strong> {response.highest_alphabet}
+                                <h3>Highest Lowercase Alphabet</h3>
+                                <ul>
+                                    <li>{response.highest_lowercase_alphabet}</li>
+                                </ul>
                             </div>
                         )}
                     </div>
