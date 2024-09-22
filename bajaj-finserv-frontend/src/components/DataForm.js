@@ -14,7 +14,11 @@ const DataForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const jsonData = JSON.parse(input);
+            // Replace curly quotes with straight quotes in the input JSON
+            const correctedInput = input.replace(/[“”]/g, '"');
+
+            // Parse the corrected input to JSON
+            const jsonData = JSON.parse(correctedInput);
 
             if (!jsonData.data || !Array.isArray(jsonData.data)) {
                 throw new Error('Invalid data format. Expected an array of strings.');
